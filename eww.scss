@@ -1,0 +1,30 @@
+
+$background-color: rgba(0, 0, 0, 0.3);
+$border-color: #ffffff;
+
+* {
+    all: unset;
+    font-family: "JetBrainsMono Nerd Font Propo";
+  }
+
+.bluetooth-panel {
+    background: $background-color;
+    padding: 10px;
+    border-radius: 14px;
+    border: 2px solid $border-color;
+}
+
+.bt-device-label {
+    font-size: 12px;
+    color: #ffffff;
+}
+
+.bt-device-menu {
+    background: $background-color;
+    padding: 10px;
+    border-radius: 14px;
+    border: 2px solid $border-color;
+    border-left: none;
+    border-top-left-radius: 0;
+}
+  

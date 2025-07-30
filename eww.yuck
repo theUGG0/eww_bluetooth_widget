@@ -1,0 +1,88 @@
+;; Polls for device data
+(defpoll bt-devices-poll :interval "2s" :initial "[]" "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-get-devices.sh -c false -p false")
+(defpoll bt-connected-poll :interval "2s" :initial "[]" "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-get-devices.sh -c true")
+(defpoll bt-paired-poll :interval "2s" :initial "[]" "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-get-devices.sh -p true")
+
+;; Variables for state management
+(defvar bt_scanning false)
+(defvar bt_power false)
+(defvar bt_devices "[]")
+(defvar connected_devices "[]")
+(defvar bt-device-menu-visible false)
+(defvar selected-device "{}")
+
+(defwidget bluetooth-panel []
+  (box :class "bluetooth-container" :orientation "h" :vexpand true :space-evenly false
+  (box :orientation "v" :class "bluetooth-panel" :spacing 5 :space-evenly false
+    ;; header
+    (centerbox :orientation "h" :class "bt-header" :space-evenly true :hexpand false
+      (button :class "bt-power"
+              :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-toggle-power.sh"
+              "${bt_power ? 'Turn off' : 'Turn on'}")
+      (button :class "bt-scan ${bt_scanning ? 'scanning' : ''}"
+              :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-toggle-scan.sh"
+              "${bt_scanning ? 'Scanning' : 'Scan'}")
+      (button :class "bt-close" :onclick "eww close bluetooth" "X"))
+    
+    ;; connected and paired devices
+    (box :orientation "h" :class "bt-known-container" :space-evenly true
+      (box :orientation "v" :class "bt-connected-list" :spacing 0 :space-evenly false
+        (label :class "bt-connected-label" :text "Connected")
+        (for device in bt-connected-poll
+          (bluetooth-device :device device)))
+      (box :orientation "v" :class "bt-paired-list" :spacing 0 :space-evenly false
+        (label :class "bt-paired-label" :text "Paired")
+        (for device in bt-paired-poll
+          (bluetooth-device :device device))))
+    
+    ;; available devices
+    (box :orientation "v" :class "bt-devices-list" :spacing 0 :vexpand "true" :space-evenly false
+      (label :class "bt-devices-label" :text "Devices")
+      (scroll :vscroll true :vexpand "true"
+        (box :orientation "v" :class "bt-devices-container" :spacing 0 :vexpand "true"
+          (for device in bt-devices-poll
+            (bluetooth-device :device device)
+          )
+        )
+      )
+    )
+  )
+    ;; sidebar context menu
+    (revealer :reveal bt-device-menu-visible :transition "slideright" :hexpand true :vexpand true :space-evenly false
+      (bluetooth-device-menu :device selected-device)
+    )
+  ))
+
+(defwidget bluetooth-device [device]
+  (eventbox :onclick "eww update bt-device-menu-visible='${!bt-device-menu-visible}'; eww update selected-device='${device}'"
+    (label :class "bt-device-label" :text "${device.name}")))
+
+;; device context menu
+(defwidget bluetooth-device-menu [device]
+  (box :orientation "v" :class "bt-device-menu" :spacing 5 :space-evenly false
+    (label :text "${device.name}")
+    (button :class "bt-device-button" 
+            :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-device-menu.sh -m ${device.mac} -c" 
+            "Connect")
+    (button :class "bt-device-button" 
+            :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-device-menu.sh -m ${device.mac} -d" 
+            "Disconnect")
+    (button :class "bt-device-button" 
+            :onclick "eww update bt-device-menu-visible=false" 
+            "Close")))
+
+;; main window
+(defwindow bluetooth
+  :class "bluetooth-window"
+  :wm-ignore true
+  :monitor 0
+  :windowtype "dock"
+  :stacking "overlay"
+  :geometry (geometry :x "0"
+                      :y "0"
+                      :width "15%"
+                      :height "35%"
+                      :anchor "top left")
+  :focusable false
+  (bluetooth-panel))
+
