@@ -54,7 +54,7 @@
   ))
 
 (defwidget bluetooth-device [device]
-  (eventbox :onclick "eww update bt-device-menu-visible='${!bt-device-menu-visible}'; eww update selected-device='${device}'"
+  (eventbox :onclick "eww update bt-device-menu-visible=${!bt-device-menu-visible}; eww update selected-device='${device}'"
     (label :class "bt-device-label" :text "${device.name}")))
 
 ;; device context menu
