@@ -4,7 +4,6 @@
 
 
 ;; Variables for state management
-(defvar bt_scanning false)
 (defvar bt-device-menu-visible false)
 (defvar selected-device "{}")
 
@@ -16,7 +15,7 @@
       (button :class "bt-power"
               :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-toggle-power.sh"
               "${bt-controller-poll.powered ? 'Turn off' : 'Turn on'}")
-      (button :class "bt-scan ${bt_scanning ? 'scanning' : ''}"
+      (button :class "bt-scan"
               :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-toggle-scan.sh"
               "${bt-controller-poll.discovering ? 'Scanning' : 'Scan'}")
       (button :class "bt-close" :onclick "eww close bluetooth" "X"))
