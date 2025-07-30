@@ -1,7 +1,7 @@
 ;; Polls for device data
 (defpoll bt-devices-poll :interval "2s" :initial "{}" "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-poll-devices.sh")
-(defpoll bt-controller-poll :interval "3s" :initial "[]" "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-poll-controller.sh")
-
+(defpoll bt-controller-poll :interval "24h" :initial "[]" "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-poll-controller.sh") 
+;;run-while is broken rn so need to make do with massive interval...
 
 ;; Variables for state management
 (defvar bt-device-menu-visible false)
