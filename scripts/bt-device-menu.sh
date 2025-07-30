@@ -15,7 +15,6 @@ done
 
 mac=$(echo "$device" | jq -r '.mac')
 name=$(echo "$device" | jq -r '.name')
-notify-send "$device"
 
 case $action in
     connect)
