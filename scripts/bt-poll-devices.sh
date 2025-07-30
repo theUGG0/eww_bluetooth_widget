@@ -37,7 +37,7 @@ while read -r line; do
                 connected_devices=$(echo "$connected_devices" | jq --argjson obj "$device_obj" '. + [$obj]')
             fi
 
-            if [[ $paired == "true"]]; then
+            if [[ $paired == "true" ]]; then
                 paired_devices=$(echo "$paired_devices" | jq --argjson obj "$device_obj" '. + [$obj]')
             fi
 
