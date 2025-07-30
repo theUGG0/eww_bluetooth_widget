@@ -58,11 +58,8 @@
   (box :orientation "v" :class "bt-device-menu" :spacing 5 :space-evenly false
     (label :text "${device.name}")
     (button :class "bt-device-button" 
-            :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-device-menu.sh -m ${device.mac} -c" 
-            "Connect")
-    (button :class "bt-device-button" 
-            :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-device-menu.sh -m ${device.mac} -d" 
-            "Disconnect")
+            :onclick "exec $HOME/.config/eww_bluetooth_widget/scripts/bt-device-menu.sh -m '${device}' ${'${device.connected}' ? '-d' : '-c'}" 
+            "${'${device.connected}' ? 'Disconnect' : 'Connect'}")
     (button :class "bt-device-button" 
             :onclick "eww update bt-device-menu-visible=false" 
             "Close")))

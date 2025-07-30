@@ -1,11 +1,11 @@
 #!/bin/bash
 
-mac=""
+device=""
 action=""
 
 while getopts "m:cd" opt; do
     case $opt in
-        m) mac=$OPTARG ;;
+        m) device=$OPTARG ;;
         c) action="connect" ;;
         d) action="disconnect" ;;
         \?) echo "Invalid option -$OPTARG" >&2; exit 1 ;;
@@ -13,14 +13,18 @@ while getopts "m:cd" opt; do
     esac
 done
 
+mac=$(echo "$device" | jq -r '.mac')
+name=$(echo "$device" | jq -r '.name')
+notify-send "$device"
+
 case $action in
     connect)
-        notify-send "Bluetooth" "Connecting to $mac" -i bluetooth -r 133669
-        bluetoothctl connect "$mac"
+        notify-send "Bluetooth" "Connecting to $name" -i bluetooth -r 133669
+        bluetoothctl connect "$mac" & eww update selected-device="$(echo "$device" | jq -c '.connected = true')"
         ;;
     disconnect)
-        notify-send "Bluetooth" "Disconnecting from $mac" -i bluetooth -r 133669
-        bluetoothctl disconnect "$mac"
+        notify-send "Bluetooth" "Disconnecting from $name" -i bluetooth -r 133669
+        bluetoothctl disconnect "$mac" & eww update selected-device="$(echo $device | jq -c '.connected = false')"
         ;;
 esac
 
